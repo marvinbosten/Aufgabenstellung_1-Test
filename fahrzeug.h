@@ -18,7 +18,9 @@ protected:// 4.3.1 Protected weil wir wollen das die abgeleiteten klassen auch z
     double p_dGesamtStrecke      = 0.0;// Gesamtstrecke in km
     double p_dGesamtZeit         = 0.0;// Gesamtzeit in h
     double p_dZeit               = 0.0;// Zeit seit die letzte Simulation in h
-
+    virtual double dTankinhalt() const;
+    virtual double dVerbrauch() const;
+    virtual double dGesamtverbrauch() const;
 
 public:
     Fahrzeug();                         // Default-Konstruktor(baut ein Fahrzeug ohne Name)

@@ -19,16 +19,18 @@ public:
         double dVerbrauch,
         double dTankvolumen = 55.0);
 
-    // Ausgabe erweitert um Tankinhalt und Verbrauch
-    void vAusgeben() const override;
-
     // PKW Simulation verbraucht Tankinhalt
     void vSimulieren() override;
 
     // PKW kann tanken override der Basisklassenmethode
     double dTanken(double dMenge = std::numeric_limits<double>::infinity()) override;
 
+	double dGeschwindigkeit() const override; //4.3.3
 
-};
+	protected:
+	double dTankinhalt() const override;
+	double dVerbrauch() const override;
+	double dGesamtverbrauch() const override;
+	};
 
 #endif
