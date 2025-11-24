@@ -28,7 +28,7 @@ public:
     // PKW kann tanken override der Basisklassenmethode
     double dTanken(double dMenge = std::numeric_limits<double>::infinity()) override;
 
-
+double dGeschwindigkeit() const override; //4.33
 };
 
 #endif

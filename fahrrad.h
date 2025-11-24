@@ -15,6 +15,8 @@ public:
     // Ausgabe
     void vAusgeben() const override;
 
+    double dGeschwindigkeit() const override; //4.3.3
+
     // Fahrräder haben keinen Tank immer 0 zurückgeben
     double dTanken(double dMenge = std::numeric_limits<double>::infinity()) override;// override der Basisklassenmethode
 };

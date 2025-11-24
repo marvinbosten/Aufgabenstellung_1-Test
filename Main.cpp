@@ -1,6 +1,7 @@
 #include <iostream>// für std::cout
 #include <memory> // für smart pointer
 #include <vector>// für vector
+#include <cmath>  // für std::fabs-------------------------
 #include "fahrzeug.h"// für die Fahrzeug-Klasse
 #include "PKW.h"   // für die PKW-Klasse
 #include "fahrrad.h"// für die Fahrrad-Klasse
@@ -163,6 +164,7 @@ void vAufgabe1a()//aufgabe 4.2.9
 }*/
 void vAufgabe2() // aufgabe 4.3.4
 {
+	g_dGlobaleZeit = 0.0; // globale Zeit zurücksetzen
     std::vector<std::unique_ptr<Fahrzeug>> vec; // vector der unique_ptr<Fahrzeug> speichert
 
     int anzahlPKW = 0;
@@ -258,7 +260,7 @@ void vAufgabe2() // aufgabe 4.3.4
 
 int main()
 {
-		vAufgabe2();
+	vAufgabe2();
     //vAufgabe1();
     //vAufgabe1a();
 	//vAufgabeTest();
