@@ -1,0 +1,22 @@
+#ifndef FAHRRAD_H
+#define FAHRRAD_H
+
+#include "fahrzeug.h"// Fahrzeug Header Datei einbinden
+
+class Fahrrad : public Fahrzeug// Fahrrad erbt von Fahrzeug
+{
+public:
+    // Konstruktor: Fahrrad bekommt nur Name + Geschwindigkeit
+    Fahrrad(const std::string& sName, double dMaxGeschwindigkeit);
+
+    // Fahrräder haben kein eigenes Verhalten "bisher"
+    void vSimulieren() override;
+
+    // Ausgabe
+    void vAusgeben() const override;
+
+    // Fahrräder haben keinen Tank immer 0 zurückgeben
+    double dTanken(double dMenge = std::numeric_limits<double>::infinity()) override;// override der Basisklassenmethode
+};
+
+#endif
