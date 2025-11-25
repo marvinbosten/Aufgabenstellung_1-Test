@@ -5,6 +5,7 @@
 #include <iostream>// für std::cout
 #include <iomanip> // für die ganzen ausgabe formatierungen()
 #include <limits>  // für std::numeric_limits<double>::infinity()
+#include <ostream> // für std::ostream
 extern double g_dGlobaleZeit;   // globale Zeit (Aufgabe 4.2.7)
 
 class Fahrzeug {
@@ -18,19 +19,24 @@ protected:// 4.3.1 Protected weil wir wollen das die abgeleiteten klassen auch z
     double p_dGesamtStrecke      = 0.0;// Gesamtstrecke in km
     double p_dGesamtZeit         = 0.0;// Gesamtzeit in h
     double p_dZeit               = 0.0;// Zeit seit die letzte Simulation in h
-
+    virtual double dTankinhalt() const;
+    virtual double dVerbrauch() const;
+    virtual double dGesamtverbrauch() const;
 
 public:
     Fahrzeug();                         // Default-Konstruktor(baut ein Fahrzeug ohne Name)
     Fahrzeug(const std::string& sName); // Konstruktor mit Name(baut ein Fahrzeug mit Name)
     Fahrzeug(const std::string& sName, double dMaxGeschwindigkeit); // Konstruktor mit Name und max. Geschwindigkeit
-    virtual ~Fahrzeug();                        // Destruktor
+    Fahrzeug(const Fahrzeug&) = delete; // Copy-Konstruktor verbieten (Aufgabe 4.4.5)
+    virtual ~Fahrzeug();
+    Fahrzeug& operator=(const Fahrzeug& rFahrzeug); // eigener Zuweisungsoperator (nur Stammdaten)// Destruktor
 //Geändert bei 4.3.1 Virtual hinzugefügt
     const std::string& getName() const;// Getter für den Namen
     int getID() const;// Getter für die ID
 
     //aufgabe 4.2.6 geändert bei 4.3.1 virtual hinzugefügt
-    virtual void vAusgeben() const;  // Gibt Fahrzeugdaten in Tabellenform aus (ohne endl!)
+    // Default-Stream ist nun std::cout, damit alte Aufrufer ohne Parameter nicht sofort umfallen
+      virtual void vAusgeben(std::ostream& rOStream = std::cout) const;  // Gibt Fahrzeugdaten in Tabellenform aus (ohne endl!)
     static void vKopf();     // Gibt Tabellenkopf aus (ohne endl!)
     //aufgabe 4.2.6 ende geändert bei 4.3.1 virtual hinzugefügt
     virtual void vSimulieren();   // Aufgabe 4.2.8
@@ -39,5 +45,11 @@ public:
 
     // augabe 4.3.2
     virtual double dTanken(double dMenge = std::numeric_limits<double>::infinity());
+
+    //aufgabe 4.4.4 Vergleichsoperator (weniger Gesamtstrecke?)
+    bool operator<(const Fahrzeug& rAndere) const;
 };
+
+// Ausgabeoperator außerhalb der Klasse (Aufgabe 4.4.2)
+std::ostream& operator<<(std::ostream& rOStream, const Fahrzeug& rFahrzeug);
 #endif

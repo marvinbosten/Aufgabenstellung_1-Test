@@ -1,6 +1,7 @@
 #include <iostream>// für std::cout
 #include <memory> // für smart pointer
 #include <vector>// für vector
+#include <cmath>  // für std::fabs-------------------------
 #include "fahrzeug.h"// für die Fahrzeug-Klasse
 #include "PKW.h"   // für die PKW-Klasse
 #include "fahrrad.h"// für die Fahrrad-Klasse
@@ -163,10 +164,11 @@ void vAufgabe1a()//aufgabe 4.2.9
 }*/
 void vAufgabe2() // aufgabe 4.3.4
 {
+	g_dGlobaleZeit = 0.0; // globale Zeit zurücksetzen
     std::vector<std::unique_ptr<Fahrzeug>> vec; // vector der unique_ptr<Fahrzeug> speichert
 
-    int anzahlPKW = 0;
-    int anzahlFahrrad = 0;
+    int anzahlPKW = 0;//anzahl der pkw die erzeugt werden sollen
+    int anzahlFahrrad = 0;//anzahl der fahrräder die erzeugt werden sollen
 
     std::cout << "Wie viele PKWs sollen erzeugt werden? ";
     std::cin >> anzahlPKW;
@@ -175,7 +177,7 @@ void vAufgabe2() // aufgabe 4.3.4
     std::cin >> anzahlFahrrad;
 
     // ---- PKW Erzeugung ----
-    for (int i = 0; i < anzahlPKW; i++)
+    for (int i = 0; i < anzahlPKW; i++)//alle user eingaben für pkw abfragen
     {
         std::string name;
         double vmax;
@@ -198,7 +200,7 @@ void vAufgabe2() // aufgabe 4.3.4
     }
 
     // ---- Fahrrad Erzeugung ----
-    for (int i = 0; i < anzahlFahrrad; i++)
+    for (int i = 0; i < anzahlFahrrad; i++)//alle user eingaben für fahrräder abfragen
     {
         std::string name;
         double vmax;
@@ -216,7 +218,7 @@ void vAufgabe2() // aufgabe 4.3.4
     std::cout << "\nSimulation startet...\n\n";
 
     double zeitschritt = 0.5; // 30 Minuten pro Schritt
-    double toleranz = 1e-6;   // für Double-Vergleich
+    double toleranz = 0.000001;   // für Double-Vergleich weil Gleitkomma
 
     Fahrzeug::vKopf();
     std::cout << "\n";
@@ -228,37 +230,79 @@ void vAufgabe2() // aufgabe 4.3.4
         // ------------- PKW tanken nach GENAU 3 Stunden ---------------
         if (std::fabs(g_dGlobaleZeit - 3.0) < toleranz)
         {
-            std::cout << "\n=== ALLE PKWs WERDEN NACH 3h VOLLGEBEUTELT ===\n";
+            std::cout << "\n=== ALLE PKWs WERDEN NACH 3h VOLLGETANKT ===\n";
 
-            for (auto &fz : vec)
+            for (auto &fz : vec)//alle fahrzeuge im vektor durchgehen
             {
-                PKW* p = dynamic_cast<PKW*>(fz.get());
-                if (p != nullptr)
+                PKW* p = dynamic_cast<PKW*>(fz.get());//versucht das fahrzeug in einen pkw zu casten
+                if (p != nullptr)//wenn der cast erfolgreich war also pkw ist
                 {
                     p->dTanken(); // default = voll
                 }
             }
-            std::cout << "================================================\n\n";
+            std::cout << std::string(140, '=') << "\n\n";
         }
 
-        // ---- alle Fahrzeuge simulieren + ausgeben ----
-        for (auto &fz : vec)
+        for (auto &fz : vec)//alle fahrzeuge im vektor durchgehen
         {
-            fz->vSimulieren();
-            fz->vAusgeben();
+            fz->vSimulieren();//fahrzeug simulieren
+            fz->vAusgeben();//fahrzeug daten ausgeben
             std::cout << "\n";
         }
 
-        std::cout << "---------------------------------------------------------------\n";
+        std::cout << std::string(140, '-') << "\n";
     }
 
     std::cout << "\nSimulation beendet.\n";
+}
+void vAufgabe3() // Aufgabe 4.4 testen
+{
+    std::cout << "\nStarte vAufgabe3 (Operator-Tests)\n";
+    g_dGlobaleZeit = 0.0;
+
+    // zwei Fahrzeuge, damit wir Vergleiche und Ausgabe testen können
+    auto pPKWTest = std::make_unique<PKW>("OperatorAuto", 120.0, 7.0, 50.0);
+    auto pBikeTest = std::make_unique<Fahrrad>("OperatorRad", 25.0);
+    Fahrzeug fCopyZiel("CopyZiel", 80.0); // wird per Zuweisungsoperator gefüttert
+
+    // kleine Simulation, damit Strecken ungleich werden
+    g_dGlobaleZeit += 1.0; // eine Stunde fahren lassen
+    pPKWTest->vSimulieren();
+    pBikeTest->vSimulieren();
+
+    g_dGlobaleZeit += 0.5; // noch eine halbe Stunde oben drauf
+    pPKWTest->vSimulieren();
+    pBikeTest->vSimulieren();
+
+    // Ausgabe ausschließlich mit dem neuen Operator<<
+    Fahrzeug::vKopf();
+    std::cout << std::endl;
+    std::cout << *pPKWTest << std::endl;
+    std::cout << *pBikeTest << std::endl;
+
+    // Vergleichsoperator testen
+    if (*pBikeTest < *pPKWTest)
+    {
+        std::cout << "Das Fahrrad hat weniger Strecke als der PKW (so soll es sein).\n";
+    }
+    else
+    {
+        std::cout << "Unerwartet: Fahrrad ist weiter gefahren als der PKW.\n";
+    }
+
+    // Zuweisungsoperator ausprobieren (nur Stammdaten)
+    fCopyZiel = *pBikeTest; // kopiert Name + MaxGeschwindigkeit, behält eigene ID und Historie
+    std::cout << "\nAusgabe vom zugewiesenen Fahrzeug (Basisobjekt behält eigene ID):\n";
+    Fahrzeug::vKopf();
+    std::cout << std::endl;
+    std::cout << fCopyZiel << std::endl;
 }
 
 
 int main()
 {
-		vAufgabe2();
+	//vAufgabe3();
+	//vAufgabe2();
     //vAufgabe1();
     //vAufgabe1a();
 	//vAufgabeTest();
